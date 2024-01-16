@@ -5,14 +5,24 @@ security:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        # users_in_memory: { memory: null }
+        # cherche les utilisateurs dans la base de données
+        users_in_database:
+            entity:
+                class: App\Entity\User
+                property: username
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             lazy: true
-            provider: users_in_memory
+            # provider: users_in_memory
+            form_login:
+                enable_csrf: true
+                login_path: app_login
+                check_path: app_login
+                
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

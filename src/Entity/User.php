@@ -5,10 +5,11 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 // En implementant l'interface, j'indique que la classe User peut etre utilisé avec le hachage de mot de passe  de symfony
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements PasswordAuthenticatedUserInterface
+class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -64,5 +65,27 @@ class User implements PasswordAuthenticatedUserInterface
         $this->role = $role;
 
         return $this;
+    }
+    // methode abstraite de UserInterface
+    /**
+     * retourne les roles utilisateurs
+     */
+    public function getRoles():array{
+        return ['ROLE_USER'];
+    }
+    public function getSalt(){
+        return null;
+    }
+    /**
+     * permet d'effacer les données sensibles de l'utilisateur en l'occurence password
+     *  */ 
+    public function eraseCredentials():void{
+        $this->password=null;
+    }
+    /**
+     * Retourne un identifiant pour l'utilisateur
+     */
+    public function getUserIdentifier():string{
+        return $this->username;
     }
 }
