@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Authentification{% endblock %}
+{% block body %}
+    <h1>Authentification</h1>
+    {{ include('user/_form.html.twig') }}
+    <a href="{{ path('app_user_index') }}">back to list</a>
+
+{% endblock %}
