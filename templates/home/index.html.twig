@@ -9,7 +9,7 @@
 </style>
 
 <div class="example-wrapper">
-    {# app.user : app est la superglobal de symfony qui prend l'utilisateur automatiquement #}
+    {# app.user : app est la superglobal de symfony qui prend l'utilisateur avec getUser() automatiquement #}
     {% if app.user %}
     <h1>Hello {{app.user.username}} ! ✅</h1>
     voici ton id : {{app.user.id}}
