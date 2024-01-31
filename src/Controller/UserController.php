@@ -36,7 +36,7 @@ class UserController extends AbstractController
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $role=$this->roleController->getRole("utilisateur");
+        $role=$this->roleController->getRole("ROLE_USER");
         // Créer objet
         $user = new User();
         $user=$user->setRole($role);

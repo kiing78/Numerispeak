@@ -80,11 +80,12 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function getRoles(): array
     {
         $role = $this->role;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        // authentifie par leur role
+        $roles[] = $role->getRoleName();
 
         return array_unique($roles);
     }
+
 
     public function setRoles(array $roles): self
     {
