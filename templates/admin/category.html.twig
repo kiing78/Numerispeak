@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace Catégorie{% endblock %}
+
+{% block body %}
+    <h1> Espace Catégorie </h1>
+    <a href="{{path("app_admin")}}">Retour dashboard admin</a><br>
+
+    <div>
+        <h2>Liste des catégories</h2><br>
+        {% for category in categoryList %}
+            {{category.name}}
+        {% endfor %}
+    </div>
+    <a href="{{path("app_category_new")}}">ajouter une categorie</a><br>
+
+
+{% endblock  %}
