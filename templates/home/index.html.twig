@@ -12,9 +12,11 @@
     {# app.user : app est la superglobal de symfony qui prend l'utilisateur avec getUser() automatiquement #}
     {% if app.user %}
     <h1>Hello {{app.user.username}} ! ✅</h1>
-    voici ton id : {{app.user.id}}
-        <a href="{{path("app_role_new")}}">ajouter un role</a><br>
+    {# voici ton role {{app.user.role.roleName}} #}
         <a href="{{path("app_logout")}}">se déconnecter</a><br>
+        {% if app.user.getRole().roleName == "ROLE_ADMIN" %}
+        <a href="{{path("app_admin")}}">dashboard admin</a><br>
+        {% endif %}
     {% else %}
     <h1>test! ✅</h1>
         <a href="{{path("app_user_new")}}">s'inscrire</a><br>
