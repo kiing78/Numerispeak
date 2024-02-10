@@ -30,6 +30,20 @@ class CategoryRepository extends ServiceEntityRepository
         $this->entityManager->persist($category);
           $this->entityManager->flush();
   }
+  /**
+   * Update category item in database
+   */
+  public function updateCategory(){
+    $this->entityManager->flush();
+  }
+
+  /**
+   * Delete a category item in database
+   */
+  public function deleteCategory(Category $category){
+    $this->entityManager->remove($category);
+    $this->entityManager->flush();
+  }
 //    /**
 //     * @return Category[] Returns an array of Category objects
 //     */

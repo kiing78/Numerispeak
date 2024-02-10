@@ -12,13 +12,28 @@ class CategoryService implements ICategoryService{
         $this->categoryRepository = $categoryRepository;
     }
 
+    /**
+     * get category list
+     */
     public function getCategory():array{
         return $this->categoryRepository->findAll();
     }
     /**
-     * Add category in database
+     * Add category item in database
      */
     public function addCategory(Category $category){
         $this->categoryRepository->addCategory($category); 
+    }
+    /**
+     * Update a category item
+     */
+    public function updateCategory(){
+        $this->categoryRepository->updateCategory();
+    }
+    /**
+     * Delete a category item
+     */
+    public function deleteCategory(Category $category){
+        $this->categoryRepository($category);
     }
 }

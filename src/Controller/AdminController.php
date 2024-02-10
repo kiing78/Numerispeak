@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Controller\CategoryController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route("/admin")]
 class AdminController extends AbstractController
@@ -33,16 +34,6 @@ class AdminController extends AbstractController
         return $this->render('admin/user.html.twig');
     }
 
-    /**
-     * Display category list on category admin space
-     */
-    #[Route("/category", name: "app_admin_category")]
-    public function categorySpace():Response{
-        $categoryList = $this->categoryController->indexCategoryAdmin();
-        return $this->render("admin/category.html.twig",[
-            'categoryList' => $categoryList
-        ]);
-    }
 
    
 }
