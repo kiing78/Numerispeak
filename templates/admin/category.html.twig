@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="{{asset('category.js')}}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+    <link rel="stylesheet" href="{{asset('/styles/categoryAdmin.css')}}">
+    <link rel="stylesheet" href="{{asset('/styles/home.css')}}">
+{% endblock %}
+
+
+{% block title %}Espace Catégorie{% endblock %}
+
+
+{% block body %}
+    <h1> Espace Catégorie </h1>
+    {# mon id categorie : {{categoryList}} #}
+    <a href="{{path("app_admin")}}">Retour dashboard admin</a><br>
+
+
+{# 
+<script>
+    var jsonData = {{ jsonData|raw }};
+</script>
+
+<div id="json-container">
+    <pre>{{ jsonData|raw }}</pre>
+</div> #}
+
+
+
+<script>
+      function createTableFromJson(jsonData) {
+        var members = jsonData['hydra:member'];
+        var table = document.createElement('table');
+        
+        // Création de l'entête du tableau
+        var thead = document.createElement('thead');
+        var headerRow = document.createElement('tr');
+        var headers = ['ID', 'Type', 'Name'];
+        headers.forEach(function(header) {
+            var th = document.createElement('th');
+            th.appendChild(document.createTextNode(header));
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+        
+        // Création du corps du tableau
+        var tbody = document.createElement('tbody');
+        members.forEach(function(member) {
+            var tr = document.createElement('tr');
+            var tdId = document.createElement('td');
+            tdId.appendChild(document.createTextNode(member.id));
+            tr.appendChild(tdId);
+            
+            var tdType = document.createElement('td');
+            tdType.appendChild(document.createTextNode(member['@type']));
+            tr.appendChild(tdType);
+            
+            var tdName = document.createElement('td');
+            tdName.appendChild(document.createTextNode(member.name));
+            tr.appendChild(tdName);
+            
+            tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+
+        return table;
+    }
+
+    fetch('/api/categories')
+        .then(response => response.json())
+    .then(data => {
+      // Convertit l'objet JSON en chaîne JSON formatée
+      var formattedJson = JSON.stringify(data, null, 2);
+      // Crée un élément 'pre' pour un affichage formaté
+      var pre = document.createElement('pre');
+      pre.textContent = formattedJson;
+      // Ajoute l'élément 'pre' au conteneur dans le DOM
+      document.getElementById('json-container').appendChild(pre);
+       document.getElementById('json-container').appendChild(createTableFromJson(pre));
+    })
+    .catch(error => console.error('Erreur lors de la récupération des données:', error));
+
+   
+</script>
+<div id="json-container">
+    <pre> mon tableau </pre>
+    {# <table>
+    <tr></tr>
+    </td></td>
+    </table> #}
+</div>
+
+
+
+
+
+
+{#
+    <div class="input_ligne">
+        <div id="selection_categories">
+            <h2>Liste des catégories</h2>
+            {% for category in categoryList %}
+                <p class="form_selection_categories">
+                    {{category.name}}
+                    <a class="lien_categories" id="updateLink" href="{{ path('app_category_edit', {'id': category.id}) }}" >Editer une catégorie</a>
+                </p>
+            {% endfor %}
+        </div>
+        <div id="bloc_bouton_categories">
+            <a class="lien_categories" onclick="typeButtonClicked(this)" id="addLink" href="{{ path('app_category_new') }}">Ajouter une catégorie</a>
+            <a class="lien_categories" onclick="typeButtonClicked(this)" id="updateLink" >Editer une catégorie</a>
+            <a class="lien_categories" onclick="typeButtonClicked(this)" id="deleteLink">Supprimer une catégorie</a>
+        </div>
+        <div id="form_categories">
+            <a class="lien_retour" onclick="typeButtonClicked(this)" id="retourLink">Retour</a>
+            <h2 id="titre_categories"></h2>
+            <form action="" method="post" id="formRadio">
+                <div id="bloc_selection_categories">
+                    {% for category in categoryList %}
+                        <div class="form_selection_categories">
+                            <label>{{category.name}}</label>
+                            <input type="radio" name="categoryId" value={{category.id}}>
+                        </div>
+                    {% endfor %}
+                </div>
+               
+                <input type="text" name="nameCategory" placeholder="Nom" id="name_category">
+                <input type="submit" value="Valider" id="categorie_button"></button>
+            </form>
+             
+            
+            
+        </div>
+    </div>
+#}
+
+
+{% endblock  %}
