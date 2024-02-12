@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Subject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @extends ServiceEntityRepository<Subject>
@@ -16,9 +17,32 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SubjectRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $entityManager;
+
+    public function __construct(ManagerRegistry $registry,EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, Subject::class);
+        $this->entityManager=$entityManager;
+    }
+    /**
+     * Add a subject in database
+     */
+    public function addSubject(Subject $subject){
+        $this->entityManager->persist($subject);
+        $this->entityManager->flush();
+    }
+    /**
+     * Update a subject in database
+     */
+    public function updateSubject(){
+        $this->entityManager->flush();
+    }
+    /**
+     * Delete a subject in database
+     */
+    public function deleteSubject(Subject $subject){
+        $this->entityManager->remove($subject);
+        $this->entityManager->flush();
     }
 
 //    /**

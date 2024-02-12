@@ -84,7 +84,7 @@ class UserController extends AbstractController
      * Delete a user
      */
     #[Route('/{id}', name: 'app_user_delete', methods: ['DELETE'])]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): JsonResponse
+    public function delete(Request $request, User $user): JsonResponse
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
             $this->userService->deleteUser($user);
