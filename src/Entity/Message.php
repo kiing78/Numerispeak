@@ -11,9 +11,12 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use Symfony\Component\Serializer\Annotation\Context;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
-#[ApiResource(
+#[ApiResource(normalizationContext:['groups' => ['read']],
     operations:[
         new Get(uriTemplate:'/messages/{id}'),
         new GetCollection(uriTemplate: '/messages'),
@@ -30,17 +33,21 @@ class Message
     private ?int $id = null;
 
     #[ORM\Column(length: 2000)]
+    #[Groups("read")]
     private ?string $messageContenu = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'd/m/Y H:i:s'])]
     private ?\DateTimeInterface $datePublication = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups("read")]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'message')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups("read")]
     private ?Subject $subject = null;
 
     public function getId(): ?int

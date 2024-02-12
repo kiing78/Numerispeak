@@ -12,7 +12,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
-#[ApiResource(
+#[ApiResource(normalizationContext:['groups' => ['read']],
     operations:[
         new Get(uriTemplate:'/roles/{id}'),
         new GetCollection(uriTemplate: '/roles'),
@@ -29,6 +29,7 @@ class Role
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups("read")]
     private ?string $roleName = null;
 
     public function getId(): ?int

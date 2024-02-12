@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ApiResource(
@@ -28,6 +29,7 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups("read")]
     private ?string $name = null;
 
     public function getId(): ?int

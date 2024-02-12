@@ -12,11 +12,12 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 
 // En implementant l'interface, j'indique que la classe User peut etre utilisé avec le hachage de mot de passe  de symfony
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource(
+#[ApiResource(normalizationContext:['groups' => ['read']],
     operations:[
         new Get(uriTemplate:'/users/{id}'),
         new GetCollection(uriTemplate: '/users'),
@@ -33,6 +34,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups("read")]
     private ?string $username = null;
 
     #[ORM\Column(length: 255)]
@@ -40,6 +42,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups("read")]
     private ?Role $role = null;
 
     public function getId(): ?int
