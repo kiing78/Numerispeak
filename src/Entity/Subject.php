@@ -12,9 +12,11 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use Symfony\Component\Serializer\Annotation\Groups;
 
+//normalization me permet de serializer les données JSON et ne pas avoir que les URI
 #[ORM\Entity(repositoryClass: SubjectRepository::class)]
-#[ApiResource(
+#[ApiResource(normalizationContext:['groups' => ['read']],
     operations:[
         new Get(uriTemplate:'/subjects/{id}'),
         new GetCollection(uriTemplate: '/subjects'),
@@ -31,14 +33,17 @@ class Subject
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups("read")]
     private ?string $name = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups("read")]
     private ?User $user = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups("read")]
     private ?Category $category = null;
 
     #[ORM\OneToMany(mappedBy: 'subject', targetEntity: Message::class, orphanRemoval: true)]
