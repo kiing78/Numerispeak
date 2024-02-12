@@ -6,10 +6,25 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 
 
 // En implementant l'interface, j'indique que la classe User peut etre utilisé avec le hachage de mot de passe  de symfony
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiResource(
+    operations:[
+        new Get(uriTemplate:'/users/{id}'),
+        new GetCollection(uriTemplate: '/users'),
+        new Post(uriTemplate:'/users'),
+        new Patch(uriTemplate: '/users/{id}'),
+        new Delete(uriTemplate:'/users/{id}'),
+    ]
+)]
 class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]

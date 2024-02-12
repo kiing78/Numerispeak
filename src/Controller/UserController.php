@@ -13,8 +13,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Service\IUserService;
 use App\Controller\RoleController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
-#[Route('/user')]
+#[Route('/api/users')]
 class UserController extends AbstractController
 {
     private $userService;
@@ -24,17 +25,20 @@ class UserController extends AbstractController
         $this->userService=$userService;
         $this->roleController=$roleController;
     }
-
-    #[Route('/', name: 'app_user_index', methods: ['GET'])]
-    public function index(): Response
+    /**
+     * Get user list
+     */
+    #[Route('/', name: 'api_users_index', methods: ['GET'])]
+    public function index(): JsonResponse
     {
-        return $this->render('user/index.html.twig', [
-            'users' => $this->userService->findAll(),
-        ]);
+        $userList=$this->userService->findAll();
+        return $this->json($userList);
     }
-
-    #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, UserPasswordHasherInterface $passwordHasher): Response
+    /**
+     * Add a user
+     */
+    #[Route('/', name: 'api_users_new', methods: ['POST'])]
+    public function new(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         $role=$this->roleController->getRole("ROLE_USER");
         // Créer objet
@@ -42,61 +46,49 @@ class UserController extends AbstractController
         $user=$user->setRole($role);
         // Met les champs saisie avec (form.) dans $form
         $form = $this->createForm(UserType::class, $user);
-        
-        
         // verifie si le submit a été utilisé
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             // hasPassword : 1er argument : instance class, 2e argument, mdp en clair
             $hashedPassword = $passwordHasher->hashPassword($user,$user->getPassword());
             $user->setPassword($hashedPassword);
             $this->userService->addUser($user);
-
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            return new JsonResponse(['status'=>'User created'], JsonResponse::HTTP_CREATED);
         }
-
-        return $this->render('user/new.html.twig', [
-            'user' => $user,
-            'form' => $form,
-        ]);
     }
-
-    #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user): Response
+    /**
+     * Show a user
+     */
+    #[Route('/{id}', name: 'api_users_show', methods: ['GET'])]
+    public function show(User $user): JsonResponse
     {
-        return $this->render('user/show.html.twig', [
-            'user' => $user,
-        ]);
+       $userItem=$this->userService->showUserById($user);
+        return $this->json($userItem);
     }
-
-    #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    /**
+     * Edit a user
+     */
+    #[Route('/{id}', name: 'api_users_edit', methods: ['PATCH'])]
+    public function edit(Request $request, User $user): JsonResponse
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            $this->userService->updateUser();
+            return new JsonResponse(['status'=>'User changed'], JsonRepsonse::HTTP_ACCEPTED);
         }
 
-        return $this->render('user/edit.html.twig', [
-            'user' => $user,
-            'form' => $form,
-        ]);
-    }
 
-    #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    }
+    /**
+     * Delete a user
+     */
+    #[Route('/{id}', name: 'app_user_delete', methods: ['DELETE'])]
+    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): JsonResponse
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($user);
-            $entityManager->flush();
+            $this->userService->deleteUser($user);
         }
-
-        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        return new JsonResponse(['status'=>'User removed'], JsonResponse::HTTP_ACCEPTED);
     }
-
 }

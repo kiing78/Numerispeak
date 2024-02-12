@@ -11,8 +11,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\IRoleService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
-#[Route('/role')]
+#[Route('/api/roles')]
 class RoleController extends AbstractController
 {
     private $roleService;
@@ -20,70 +21,65 @@ class RoleController extends AbstractController
     public function __construct(IRoleService $roleService){
         $this->roleService = $roleService;
     }
-
-    #[Route('/', name: 'app_role_index', methods: ['GET'])]
-    public function index(): Response
+    /**
+     * Get role list
+     */
+    #[Route('/', name: 'api_role_index', methods: ['GET'])]
+    public function index(): JsonResponse
     {
-        return $this->render('role/index.html.twig', [
-            'roles' => $this->roleService->findAll(),
-        ]);
+        $roleList=$this->roleService->findAll();
+        return $this->json($roleList);
     }
-
-    #[Route('/new', name: 'app_role_new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
+    /**
+     * Add a role
+     */
+    #[Route('/', name: 'api_role_new', methods: ['POST'])]
+    public function new(Request $request): JsonResponse
     {
         $role = new Role();
         // createForm: Créer un formulaire pour l'objet $role
         // RoleType dans le dossier Form, cette classe
         $form = $this->createForm(RoleType::class, $role);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->roleService->addRole($role);
-            return $this->redirectToRoute('app_role_index', [], Response::HTTP_SEE_OTHER);
+            return new JsonResponse(['status'=>'Role created'], JsonResponse::HTTP_CREATED);
+
         }
-
-        return $this->render('role/new.html.twig', [
-            'role' => $role,
-            'form' => $form,
-        ]);
     }
-
-    #[Route('/{id}', name: 'app_role_show', methods: ['GET'])]
-    public function show(Role $role): Response
+    /**
+     * Show a role
+     */
+    #[Route('/{id}', name: 'api_role_show', methods: ['GET'])]
+    public function show(Role $role): JsonResponse
     {
-        return $this->render('role/show.html.twig', [
-            'role' => $role,
-        ]);
+        $roleItem=$this->roleService->showRole($role);
+        return $this->json($roleItem);
     }
-
-    #[Route('/{id}/edit', name: 'app_role_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Role $role, EntityManagerInterface $entityManager): Response
+    /**
+     * Edit a role
+     */
+    #[Route('/{id}', name: 'api_role_edit', methods: ['PUT'])]
+    public function edit(Request $request, Role $role, EntityManagerInterface $entityManager): JsonResponse
     {
         $form = $this->createForm(RoleType::class, $role);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_role_index', [], Response::HTTP_SEE_OTHER);
+            $this->roleService->updateRole();
+            return new JsonResponse(['status'=>'Role changed'], JsonRepsonse::HTTP_ACCEPTED);
         }
-
-        return $this->render('role/edit.html.twig', [
-            'role' => $role,
-            'form' => $form,
-        ]);
     }
-
-    #[Route('/{id}', name: 'app_role_delete', methods: ['POST'])]
-    public function delete(Request $request, Role $role, EntityManagerInterface $entityManager): Response
+    /**
+     * Delete a role
+     */
+    #[Route('/{id}', name: 'api_role_delete', methods: ['DELETE'])]
+    public function delete(Request $request, Role $role, EntityManagerInterface $entityManager): JsonResponse
     {
         if ($this->isCsrfTokenValid('delete'.$role->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($role);
-            $entityManager->flush();
+            $this->roleService->deleteRole($role);
         }
-
-        return $this->redirectToRoute('app_role_index', [], Response::HTTP_SEE_OTHER);
+        return new JsonResponse(['status'=>'Role removed'], JsonResponse::HTTP_ACCEPTED);
     }
 
     public function getRole(string $user):Role{
