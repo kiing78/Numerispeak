@@ -24,11 +24,27 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
         $this->entityManager=$entityManager;
     }
-
+    /**
+     * Add a user in database
+     */
     public function addUser(User $user){
-          $this->entityManager->persist($user);
-            $this->entityManager->flush();
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
     }
+    /**
+     * Update a user in database
+     */
+    public function updateUser(){
+        $this->entityManager->flush();
+    }
+    /**
+     * Delete a user in database
+     */
+    public function deletUser(User $user){
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+    }
+
 
 //    /**
 //     * @return User[] Returns an array of User objects

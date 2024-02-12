@@ -4,8 +4,23 @@ namespace App\Entity;
 
 use App\Repository\RoleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
+#[ApiResource(
+    operations:[
+        new Get(uriTemplate:'/roles/{id}'),
+        new GetCollection(uriTemplate: '/roles'),
+        new Post(uriTemplate:'/roles'),
+        new Put(uriTemplate: '/roles/{id}'),
+        new Delete(uriTemplate:'/roles/{id}'),
+    ]
+)]
 class Role
 {
     #[ORM\Id]

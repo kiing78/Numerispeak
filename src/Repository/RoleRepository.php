@@ -24,18 +24,32 @@ class RoleRepository extends ServiceEntityRepository
         parent::__construct($registry, Role::class);
         $this->entityManager = $entityManager;
     }
-
+    /**
+     * Add a role in database
+     */
     public function addRole(Role $role){
         $this->entityManager->persist($role);
-            $this->entityManager->flush();
+        $this->entityManager->flush();
     }
-
     public function getRole(string $roleName):Role{
         return $this-> createQueryBuilder("r")
             ->Where('r.roleName = :role')
             ->setParameter(':role',$roleName)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+    /**
+     * Update a role in database
+     */
+    public function updateRole(){
+        $entityManager->flush();
+    }
+    /**
+     * Delete a role in database
+     */
+    public function deleteRole(Role $role){
+        $entityManager->remove($role);
+        $entityManager->flush();
     }
 
 //    /**

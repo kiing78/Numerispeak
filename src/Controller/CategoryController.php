@@ -21,8 +21,9 @@ class CategoryController extends AbstractController
     public function __construct(ICategoryService $categoryService){
         $this->categoryService=$categoryService;
     }
-
-
+    /**
+     * Get category list
+     */
     #[Route('/', name: 'api_category_index', methods: ['GET'])]
     public function index(): JsonResponse
     {
@@ -48,15 +49,9 @@ class CategoryController extends AbstractController
 
         }
     }
-
-    // #[Route('/{id}', name: 'api_category_show', methods: ['GET'])]
-    // public function show(Category $category): Response
-    // {
-    //     return $this->render('category/show.html.twig', [
-    //         'category' => $category,
-    //     ]);
-    // }
-
+    /**
+     * Edit a category
+     */
     // la logique d'affichage :GET et la logique de soumission : PUT
     #[Route('/{id}', name: 'api_category_edit', methods: ['PUT'])]
     public function edit(Request $request, Category $category): JsonResponse
@@ -68,12 +63,11 @@ class CategoryController extends AbstractController
             return new JsonResponse(['status'=>'Category changed'], JsonRepsonse::HTTP_ACCEPTED);
         }
         // la logique pour GET pour avoir le formulaire et soumission de formulaire invalide
-        return $this->render('category/edit.html.twig', [
-            'category' => $category,
-            'form' => $form,
-        ]);
     }
 
+    /**
+     * Delete a category
+     */
     #[Route('/{id}', name: 'api_category_delete', methods: ['DELETE'])]
     public function delete(Request $request, Category $category): JsonResponse
     {
