@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Message;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @extends ServiceEntityRepository<Message>
@@ -16,11 +17,32 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MessageRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $entityManager;
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, Message::class);
+        $this->entityManager=$entityManager;
     }
-
+    /**
+     * Add a message in database
+     */
+    public function addSubject(Message $message){
+        $this->entityManager->persist($message);
+        $this->entityManager->flush();
+    }
+    /**
+     * Update a message in database
+     */
+    public function updateSubject(){
+        $this->entityManager->flush();
+    }
+    /**
+     * Delete a message in database
+     */
+    public function deleteSubject(Message $message){
+        $this->entityManager->remove($message);
+        $this->entityManager->flush();
+    }
 //    /**
 //     * @return Message[] Returns an array of Message objects
 //     */

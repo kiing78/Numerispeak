@@ -5,8 +5,23 @@ namespace App\Entity;
 use App\Repository\MessageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
+#[ApiResource(
+    operations:[
+        new Get(uriTemplate:'/messages/{id}'),
+        new GetCollection(uriTemplate: '/messages'),
+        new Post(uriTemplate:'/messages'),
+        new Patch(uriTemplate: '/messages/{id}'),
+        new Delete(uriTemplate:'/messages/{id}'),
+    ]
+)]
 class Message
 {
     #[ORM\Id]

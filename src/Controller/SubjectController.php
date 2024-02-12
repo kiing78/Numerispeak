@@ -58,6 +58,7 @@ class SubjectController extends AbstractController
     #[Route('/{id}', name: 'api_subject_edit', methods: ['PATCH'])]
     public function edit(Request $request, Subject $subject): JsonResponse
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(SubjectType::class, $subject);
         $form->handleRequest($request);
 
@@ -77,6 +78,8 @@ class SubjectController extends AbstractController
     #[Route('/{id}', name: 'api_subject_delete', methods: ['DELETE'])]
     public function delete(Request $request, Subject $subject): JsonResponse
     {
+        //Uniquement l'admin pourra executer le code suivant
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if ($this->isCsrfTokenValid('delete'.$subject->getId(), $request->request->get('_token'))) {
             $this->subjectService->deleteSubject($subject);
         }
